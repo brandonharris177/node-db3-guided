@@ -1,11 +1,12 @@
 const express = require('express');
 
 const db = require('../data/db-config.js');
+const Users = require('./user-model.js');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  db('users')
+  Users.find()
   .then(users => {
     res.json(users);
   })
@@ -15,12 +16,8 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  const { id } = req.params;
-
-  db('users').where({ id })
-  .then(users => {
-    const user = users[0];
-
+  Users.findById(req.params.id)
+  .then(user => {
     if (user) {
       res.json(user);
     } else {
@@ -81,6 +78,7 @@ router.get('/:id/posts', (req, res)=> {
   db('posts as p')
   .join('users as u', 'u.id', '=', 'p.user_id')
   .where({ user_id: req.params.id })
+  .select('p.id', 'p.contents as quote', 'u.username as User Name')
   .then(posts =>
     res.status(200).json(posts))
   .catch(error => 
