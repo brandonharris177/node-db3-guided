@@ -3,7 +3,8 @@ const db = require('../data/db-config.js');
 module.exports = {
     find,
     findById,
-    findPosts
+    findPosts,
+    add
 };
 
 function find() {
@@ -21,4 +22,9 @@ function findPosts(userId) {
     .join('users as u', 'u.id', '=', 'p.user_id')
     .where({ user_id: userId })
     .select('p.id', 'p.contents as quote', 'u.username as User Name')
+}
+
+function add(user) {
+    return db('users')
+    .insert(user, 'id');
 }

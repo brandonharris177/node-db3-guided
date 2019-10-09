@@ -2,6 +2,7 @@ const express = require('express');
 
 const db = require('../data/db-config.js');
 const Users = require('./user-model.js');
+const { isVaidUser } = require('./user-helpers.js');
 
 const router = express.Router();
 
@@ -30,9 +31,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const userData = req.body;
-
-  db('users').insert(userData)
+  Users.add(req.body)
   .then(ids => {
     res.status(201).json({ created: ids[0] });
   })
